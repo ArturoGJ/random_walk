@@ -1,10 +1,10 @@
 use rand::prelude::SliceRandom;
-use std::{thread::sleep, time::Duration};
+use std::time::Duration;
 
 use sdl2::pixels::Color;
 
-const WIDTH: u32 = 800;
-const HEIGHT: u32 = 600;
+const WIDTH: u32 = 1200;
+const HEIGHT: u32 = 800;
 fn main() -> Result<(), String> {
     let sdl_context = sdl2::init()?;
     let video_subsystem = sdl_context.video()?;
@@ -21,11 +21,10 @@ fn main() -> Result<(), String> {
 
     let mut event_pump = sdl_context.event_pump()?;
 
-    canvas.set_draw_color(Color::WHITE);
+    canvas.set_draw_color(Color::BLACK);
     canvas.clear();
 
     let mut simulation_context = SimulationContext::new();
-    let mut frame_count = 0;
     'running: loop {
         for event in event_pump.poll_iter() {
             match event {
@@ -34,20 +33,16 @@ fn main() -> Result<(), String> {
             }
         }
 
-        frame_count += 1;
-        if frame_count % 2 == 0 {
-            simulation_context.update();
-            frame_count = 0;
-        }
+        simulation_context.update();
 
-        canvas.set_draw_color(Color::BLACK);
+        canvas.set_draw_color(Color::WHITE);
         canvas.draw_line(
             simulation_context.walker.prev_position,
             simulation_context.walker.position,
         )?;
         canvas.present();
 
-        ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 30));
+        ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 240));
     }
 
     Ok(())
